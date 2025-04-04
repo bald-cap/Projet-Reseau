@@ -1,12 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/select.h>
-#include <errno.h>
-#include <signal.h>
+#define SERVER
+#include"chat_shared.h"
 
 #define PORT 8082
 #define MAX_CLIENTS 10
