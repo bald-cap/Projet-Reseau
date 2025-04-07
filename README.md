@@ -1,72 +1,70 @@
-Plan de développement du projet
-1. Comprendre le fonctionnement des sockets en C
-Avant de coder, assure-toi de bien comprendre :
+# Projet Chat Client-Serveur en C avec GTK
 
-La création d'un socket (avec socket())
+## Structure du Projet
 
-La liaison du socket à une adresse (bind())
+Le projet est divisé en deux parties principales :
+- **Le serveur** (`serveur_chat.c`)
+- **Le client** (`client_chat.c`)
 
-L'écoute des connexions entrantes (listen())
+### Organisation du Code
 
-L'acceptation d'une connexion client (accept())
+Le projet est structuré avec des fichiers `.h` (fichiers d’en-tête) et des fichiers `.c` (code source).
 
-L'envoi et la réception de messages (send() et recv())
+- Les **fichiers `.h`** contiennent :
+  - Les **macros** et **constantes** utilisées dans le projet
+  - Les **prototypes** des fonctions principales
 
-La fermeture d'une connexion (close())
+- Le **fichier `serveur_chat.c`** inclut :
+  - Une abstraction pour la gestion des erreurs
+  - L’implémentation des fonctions principales du serveur
 
-2. Implémentation du serveur
-Le serveur devra :
+- Le **fichier `client_chat.c`** utilise :
+  - La bibliothèque **GTK+ 3.0** pour créer une interface graphique
+  - Une encapsulation des actions utilisateurs via des boutons :
+    - Envoyer un message
+    - Se déconnecter proprement
 
-Accepter plusieurs connexions simultanément (utilisation de select(), poll() ou pthread pour la gestion des clients).
+## Fonctionnalités
 
-Gérer l'envoi et la réception de messages.
+- Interface graphique cliente :
+  - Envoi de messages via un bouton "Envoyer"
+  - Déconnexion propre via un bouton dédié
+- Transmission et stockage des messages :
+  - Les messages envoyés sont reçus par le serveur
+  - Ils sont redistribués à tous les clients connectés
+  - Ils sont enregistrés dans un fichier `history.txt`
 
-Diffuser les messages reçus à tous les clients connectés.
+## Protocoles et Technologies
 
-Gérer les déconnexions proprement.
+- **Protocole de communication :** TCP/IP
+- **Bibliothèque d'interface graphique :** GTK+ 3.0
+- **Langage utilisé :** C
 
-3. Implémentation du client
-Le client devra :
+### Commandes de Compilation
 
-Se connecter au serveur (connect())
-
-Lire les messages saisis par l'utilisateur et les envoyer au serveur
-
-Afficher les messages reçus en temps réel
-
-Gérer les erreurs de connexion et de déconnexion
-
-4. Améliorations possibles
-Ajouter des pseudonymes
-
-Implémenter des salons de discussion
-
-Sauvegarder l'historique des messages
-
-Ajouter un chiffrement basique des messages
-
-### COMMUNICATION
-#### Connection
-- saissis son pseudo
-
-serveur ecoute le message d'un client - lire()
-serveur broadcats le message reçu aux autres clients
-serveur transfer le message lu à l'autre client
-
-
-
-### GRACFUL SHUTDOWN
-Liberer le port avant la fermeture / se deconnecter en tappant le mot exit
-Sauvgarder chaque info dans le fichier concerné
-
-``` bash
-gcc -o serveur serveur_chat.c
-gcc -o client client_chat.c
+#### Serveur
+```bash
+gcc -o serveur_chat serveur_chat.c
 ```
 
-### CURRENT CODE
-- Broadcast des clients (terminé)
+#### Client
+```bash
+gcc -o client_chat client_chat.c $(pkg-config --cflags --libs gtk+-3.0) -pthread
+```
 
-#### Problem
-- Traquer les Psuedo + message
-- Graceful Shutdown (gestion de liberation de port au kill SIGINT / SIGTERM)
+## Fonctionnalités Non Réalisées
+
+- **Chiffrement de bout en bout (E2EE)** :
+  - Idée : rendre les messages lisibles uniquement par les clients
+  - Tentatives :
+    - Chiffrement César (trop simple)
+    - OpenSSL (tentative de mise en place d’un chiffrement standardisé)
+  - Statut : **non implémenté**
+
+## Difficultés Rencontrées
+
+- Complexité du langage C :
+  - Gestion manuelle de la mémoire
+  - Manipulation précise des tailles et buffers
+  - Grand nombre de fonctions systèmes à retenir
+- Intégration avec GTK+ et gestion multi-thread via pthreads
